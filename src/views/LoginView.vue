@@ -1,9 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+
+import { LoginServices } from '../services/LoginServices';
 import InputPublico from '../components/InputPublico.vue';
 
 import iconeLogin from '../assets/imagens/envelope.svg';
 import iconeSenha from '../assets/imagens/key.svg';
+
+const loginService = new LoginServices();
 
 export default defineComponent({
   setup() {
@@ -21,18 +25,39 @@ export default defineComponent({
     };
   },
   methods: {
-    efetuarLogin() {
-      if (!this.login && !this.senha) {
-        this.erro = 'Favor preencher o formulário';
-        return;
+    async efetuarLogin() {
+      try {
+        if (
+          !this.login &&
+          !this.login.trim() &&
+          !this.senha &&
+          !this.senha.trim()
+        ) {
+          this.erro = 'Favor preencher o formulário';
+          return;
+        }
+        this.loading = true;
+        await loginService.login({ login: this.login, senha: this.senha });
+      } catch (e: any) {
+        console.log(e);
+        if (e?.response?.data?.erro) {
+          this.erro = e?.response?.data?.erro;
+        } else {
+          this.erro = 'Não foi possível realizar o login, tente novamente.';
+        }
       }
-      alert('Login efetuado com sucesso!');
+      this.loading = false;
     },
     setLogin(v: any) {
       this.login = v;
     },
     setSenha(v: any) {
       this.senha = v;
+    },
+  },
+  computed: {
+    buttonText() {
+      return this.loading ? '...Carregando' : 'Login';
     },
   },
   components: { InputPublico },
@@ -62,7 +87,9 @@ export default defineComponent({
         :modelValue="senha"
         @setInput="setSenha"
       />
-      <button @click.enter.prevent="efetuarLogin()">Login</button>
+      <button @click.enter.prevent="efetuarLogin" :disabled="loading">
+        {{ buttonText }}
+      </button>
       <div class="link">
         <p>Não possui uma conta?</p>
         <a href="">Faça seu cadastro agora!</a>
