@@ -1,13 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-import { LoginServices } from '../services/LoginServices';
-import router from '../router/';
-
 import InputPublico from '../components/InputPublico.vue';
-
 import iconeLogin from '../assets/imagens/envelope.svg';
 import iconeSenha from '../assets/imagens/key.svg';
+import { LoginServices } from '../services/LoginServices';
+import router from '../router';
 
 const loginService = new LoginServices();
 
@@ -16,6 +13,7 @@ export default defineComponent({
     return {
       iconeLogin,
       iconeSenha,
+      loginService,
     };
   },
   data() {
@@ -46,7 +44,7 @@ export default defineComponent({
         if (e?.response?.data?.erro) {
           this.erro = e?.response?.data?.erro;
         } else {
-          this.erro = 'Não foi possível realizar o login, tente novamente.';
+          this.erro = 'Não foi possível efetuar o login, tente novamente!';
         }
       }
       this.loading = false;
@@ -60,7 +58,7 @@ export default defineComponent({
   },
   computed: {
     buttonText() {
-      return this.loading ? '...Carregando' : 'Login';
+      return this.loading ? '... Carregando' : 'Login';
     },
   },
   components: { InputPublico },
@@ -70,34 +68,36 @@ export default defineComponent({
 <template>
   <div class="container-publico">
     <img src="../assets/imagens/logo.svg" alt="Logo Devagram" class="logo" />
-    <form action="">
+    <form>
       <p v-if="erro" class="error">{{ erro }}</p>
+      <p v-if="$route.query.cadastroComSucesso" class="sucesso">
+        Cadastro Efetuado com sucesso, faça o login!
+      </p>
 
       <InputPublico
         :icone="iconeLogin"
-        alt="Insira o Login"
-        placeholder="Email"
+        alt="Insira o login"
         tipo="text"
+        placeholder="Email"
         :modelValue="login"
         @setInput="setLogin"
       />
 
       <InputPublico
         :icone="iconeSenha"
-        alt="Insira a Senha"
-        placeholder="Senha"
+        alt="Insira a senha"
         tipo="password"
+        placeholder="Senha"
         :modelValue="senha"
         @setInput="setSenha"
       />
+
       <button @click.enter.prevent="efetuarLogin" :disabled="loading">
         {{ buttonText }}
       </button>
       <div class="link">
         <p>Não possui uma conta?</p>
-        <RouterLink :to="{ name: 'cadastro' }"
-          >Faça seu cadastro agora!</RouterLink
-        >
+        <RouterLink to="/cadastro">Faça seu cadastro agora!</RouterLink>
       </div>
     </form>
   </div>
