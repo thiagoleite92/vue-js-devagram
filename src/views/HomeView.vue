@@ -1,10 +1,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Header from '../components/Header.vue';
+import NavegacaoView from './NavegacaoView.vue';
+import Footer from '../components/Footer.vue';
 
-export default defineComponent({ components: { Header } });
+export default defineComponent({
+  components: { Header, Footer },
+});
 </script>
 
 <template>
   <Header />
+  <Footer />
 </template>

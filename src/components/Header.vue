@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import NavegacaoView from '../views/NavegacaoView.vue';
 
 export default defineComponent({
   data() {
@@ -7,6 +8,7 @@ export default defineComponent({
       resultado: [],
     };
   },
+  components: { NavegacaoView },
 });
 </script>
 
@@ -19,9 +21,8 @@ export default defineComponent({
           <img src="../assets/imagens/search.svg" class="icon" />
           <input type="text" placeholder="Pesquisar" />
         </div>
-
-        <!-- Navegacao -->
       </div>
+      <NavegacaoView />
     </div>
 
     <div class="resultado" v-if="resultado.length > 0">
