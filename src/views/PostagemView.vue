@@ -50,8 +50,12 @@ export default defineComponent({
 
     <div class="rodape">
       <div class="acoes">
-        <img alt="Icone Curtir" :src="obterIconeCurtir" />
-        <img alt="Icone Comentario" src="../assets/imagens/comentarCinza.svg" />
+        <img alt="Icone Curtir" :src="obterIconeCurtir" class="feedIcone" />
+        <img
+          alt="Icone Comentario"
+          src="../assets/imagens/comentarCinza.svg"
+          class="feedIcone"
+        />
         <span class="curtidas"
           >Curtido por
           <strong
@@ -83,4 +87,4 @@ export default defineComponent({
   </div>
 </template>
 
-<!-- <style lang="scss" src="@/assets/styles/feed.scss" /> -->
+<style lang="scss" src="@/assets/styles/postagem.scss" />
