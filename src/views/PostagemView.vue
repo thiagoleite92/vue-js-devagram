@@ -7,6 +7,7 @@ import likeCinza from '../assets/imagens/likeCinza.svg';
 import comentarRoxo from '../assets/imagens/comentarRoxo.svg';
 import comentarCinza from '../assets/imagens/comentarCinza.svg';
 import { FeedServices } from '@/services/FeedServices';
+import router from '@/router';
 
 const feedServices = new FeedServices();
 
@@ -36,7 +37,9 @@ export default defineComponent({
     };
   },
   methods: {
-    navegarParaPerfil() {},
+    navegarParaPerfil() {
+      router.push('/usuario/' + this.post?.idUsuario);
+    },
     async toogleCurtir() {
       try {
         await feedServices.toggleCurtir(this.post?._id);

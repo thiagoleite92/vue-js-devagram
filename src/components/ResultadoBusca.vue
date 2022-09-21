@@ -13,7 +13,7 @@ export default defineComponent({
   },
   methods: {
     irParaUsuario() {
-      router.push('/usuario' + this.id);
+      router.push('/usuario/' + this.id);
     },
   },
   components: { Avatar },

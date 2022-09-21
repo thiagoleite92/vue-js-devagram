@@ -11,6 +11,14 @@ import router from '@/router';
 export default defineComponent({
   methods: {
     efetuarNavegacao(name: string) {
+      console.log('oi');
+
+      const id = localStorage.getItem('_id') as string;
+
+      if (name === 'perfil') {
+        router.push({ name, params: { id } });
+      }
+
       router.push({ name });
     },
     getIcone(name: string) {
