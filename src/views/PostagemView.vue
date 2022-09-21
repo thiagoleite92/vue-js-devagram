@@ -6,6 +6,9 @@ import likeRoxo from '../assets/imagens/likeRoxo.svg';
 import likeCinza from '../assets/imagens/likeCinza.svg';
 import comentarRoxo from '../assets/imagens/comentarRoxo.svg';
 import comentarCinza from '../assets/imagens/comentarCinza.svg';
+import { FeedServices } from '@/services/FeedServices';
+
+const feedServices = new FeedServices();
 
 export default defineComponent({
   setup() {
@@ -15,13 +18,61 @@ export default defineComponent({
       comentarRoxo: String,
       comentarCiza: String,
       loggedUserId: localStorage.getItem('_id'),
+      loggedAvatar: localStorage.getItem('avatar') ?? '',
+      loggedName: localStorage.getItem('nome') ?? '',
     };
   },
   props: {
     post: null,
   },
+  data() {
+    return {
+      showComentario: false,
+      comentarioMsg: '',
+    };
+  },
   methods: {
     navegarParaPerfil() {},
+    async toogleCurtir() {
+      try {
+        await feedServices.toggleCurtir(this.post?._id);
+
+        const index = this.post?.likes?.findIndex(
+          (e: string) => e === this.loggedUserId
+        );
+
+        if (index != -1) {
+          this.post?.likes?.splice(index, 1);
+        } else {
+          this.post?.likes?.push(this.loggedUserId);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    toggleComentario() {
+      this.showComentario = !this.showComentario;
+    },
+    async enviarComentario() {
+      try {
+        if (!this.comentarioMsg || !this.comentarioMsg.trim()) {
+          return;
+        }
+
+        await feedServices.enviarComentario(this.post?._id, this.comentarioMsg);
+
+        this.post?.comentarios?.push({
+          usuarioId: this.loggedUserId,
+          nome: this.loggedName,
+          comentario: this.comentarioMsg,
+        });
+
+        this.comentarioMsg = '';
+        this.showComentario = false;
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
   computed: {
     obterIconeCurtir() {
@@ -29,6 +80,9 @@ export default defineComponent({
         this.post?.likes.findIndex((e: String) => e === this.loggedUserId) != -1
         ? likeRoxo
         : likeCinza;
+    },
+    obterIconeComentario() {
+      return this.showComentario ? comentarRoxo : comentarCinza;
     },
   },
   components: { Avatar },
@@ -50,11 +104,17 @@ export default defineComponent({
 
     <div class="rodape">
       <div class="acoes">
-        <img alt="Icone Curtir" :src="obterIconeCurtir" class="feedIcone" />
+        <img
+          alt="Icone Curtir"
+          :src="obterIconeCurtir"
+          class="feedIcone"
+          @click="toogleCurtir"
+        />
         <img
           alt="Icone Comentario"
-          src="../assets/imagens/comentarCinza.svg"
+          :src="obterIconeComentario"
           class="feedIcone"
+          @click="toggleComentario"
         />
         <span class="curtidas"
           >Curtido por
@@ -81,8 +141,15 @@ export default defineComponent({
       </div>
     </div>
 
-    <div class="container-comentario">
-      <!-- implementar comentario -->
+    <div class="container-comentario" v-if="showComentario">
+      <Avatar alt="Minha foto" :imagem="loggedAvatar" />
+      <input
+        type="text"
+        placeholder="Adicione um comentário..."
+        @keyup.enter="enviarComentario"
+        v-model="comentarioMsg"
+      />
+      <button type="button" @click="enviarComentario">Publicar</button>
     </div>
   </div>
 </template>
