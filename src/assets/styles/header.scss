@@ -64,6 +64,14 @@
     display: none;
   }
 
+  .resultado {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    z-index: 9;
+    top: 55px;
+  }
+
   @media screen and (min-width: $desktopBreakpoint) {
     .principal {
       justify-content: space-evenly;
@@ -105,6 +113,14 @@
           }
         }
       }
+    }
+
+    .resultado {
+      width: 20%;
+      min-width: 340px;
+      top: 63px;
+
+      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.5));
     }
   }
 }
